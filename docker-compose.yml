@@ -1,0 +1,53 @@
+# Sobe tudo com um comando:  docker compose up --build
+#   site:   http://localhost:3000
+#   e-mails do login admin (Mailpit): http://localhost:8025
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: agentes
+      POSTGRES_PASSWORD: agentes
+      POSTGRES_DB: agentes
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agentes"]
+      interval: 3s
+      retries: 20
+
+  mail:
+    image: axllent/mailpit:latest
+    ports: ["8025:8025", "1025:1025"]
+
+  # Aplica as migrações e carrega os 32 casos (idempotente), depois encerra.
+  migrate:
+    build: { context: ., target: builder }
+    command: npm run setup
+    environment: &env
+      DATABASE_URL: postgresql://agentes:agentes@db:5432/agentes?schema=public
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+      AUTH_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+      AUTH_SECRET: ${AUTH_SECRET:-dev-apenas-troque-em-producao}
+      AUTH_TRUST_HOST: "true"
+      EMAIL_SERVER: ${EMAIL_SERVER:-smtp://mail:1025}
+      EMAIL_FROM: ${EMAIL_FROM:-Agentes na Prática <nao-responda@localhost>}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@localhost}
+      ADMIN_PASSWORD_HASH: ${ADMIN_PASSWORD_HASH:-}
+      CRON_SECRET: ${CRON_SECRET:-dev-cron}
+      REDDIT_CLIENT_ID: ${REDDIT_CLIENT_ID:-}
+      REDDIT_CLIENT_SECRET: ${REDDIT_CLIENT_SECRET:-}
+      REDDIT_USER_AGENT: ${REDDIT_USER_AGENT:-web:agentes-na-pratica:1.0}
+      CONTACT_EMAIL: ${CONTACT_EMAIL:-}
+    depends_on:
+      db: { condition: service_healthy }
+
+  app:
+    build: { context: ., target: runner }
+    environment: *env
+    ports: ["3000:3000"]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      mail: { condition: service_started }
+
+volumes:
+  pgdata:

@@ -1,0 +1,138 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------- Auth.js (somente o login do ADMIN; o site público não tem contas) ----------
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  accounts      Account[]
+  sessions      Session[]
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+// ---------- Catálogo ----------
+model Agent {
+  id          String @id @default(cuid())
+  slug        String @unique
+  name        String
+  description String @default("")
+  cases       Case[]
+}
+
+model Topic {
+  id          String @id @default(cuid())
+  slug        String @unique
+  name        String
+  description String @default("")
+  cases       Case[]
+}
+
+model Case {
+  id             String   @id @default(cuid())
+  slug           String   @unique
+  title          String
+  originalTitle  String
+  summary        String
+  prompt         String?
+  howTo          String?
+  sourceUrl      String   @unique
+  subreddit      String
+  author         String?
+  redditId       String?  @unique
+  redditScore    Int      @default(0)
+  redditComments Int      @default(0)
+  engagementAt   DateTime?
+  publishedAt    DateTime
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  topicId        String
+  topic          Topic    @relation(fields: [topicId], references: [id])
+  agents         Agent[]
+  wantCount      Int      @default(0) // contador anônimo de "Quero isso"
+
+  @@index([publishedAt])
+}
+
+enum CandidateStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// Posts do Reddit encontrados pelo coletor. Nunca viram caso sem aprovação de um admin.
+model Candidate {
+  id             String          @id @default(cuid())
+  status         CandidateStatus @default(PENDING)
+  title          String
+  sourceUrl      String          @unique
+  subreddit      String
+  author         String?
+  redditId       String          @unique
+  redditScore    Int             @default(0)
+  redditComments Int             @default(0)
+  postedAt       DateTime
+  rawText        String          @default("")
+  reviewedAt     DateTime?
+  reviewedBy     String?
+  caseId         String?
+  createdAt      DateTime        @default(now())
+
+  @@index([status, postedAt])
+}
+
+model RateLimit {
+  key         String   @id
+  count       Int
+  windowStart DateTime
+}
+
+model CollectorRun {
+  id        String   @id @default(cuid())
+  startedAt DateTime @default(now())
+  method    String
+  found     Int      @default(0)
+  added     Int      @default(0)
+  refreshed Int      @default(0)
+  errors    String   @default("")
+}
