@@ -1,5 +1,5 @@
 {
- "atualizado": "2026-10-14",
+ "atualizado": "2026-10-15",
  "agentes": {
   "claude": "Claude / Claude Code",
   "chatgpt": "ChatGPT / OpenAI",
@@ -638,6 +638,197 @@
    "data": "2026-02-14",
    "prompt": null,
    "comoReproduzir": "Crie um bot que recebe mensagens livres sobre gastos e peça à IA item, valor e categoria; gere um relatório semanal."
+  },
+  {
+   "id": "r-1x52mx6",
+   "titulo": "Imposto de ações na Tchéquia, calculado por um bot no Telegram",
+   "tituloOriginal": "I built a Telegram bot in n8n that calculates my Czech investment taxes (Trading 212 + IBKR, FIFO, 3-year rule, ČNB rates)",
+   "resumo": "Quem investe pela Trading 212 e pela Interactive Brokers e mora na Tchéquia montou um fluxo no n8n, no próprio servidor. Manda o CSV da corretora no Telegram. O fluxo recusa arquivo repetido, casa cada venda com os lotes de compra, aplica a isenção de três anos, busca o câmbio do dia no banco central e só grava se a conta fechar. Dá para perguntar o imposto de uma venda antes de fazê-la.",
+   "agentes": [
+    "n8n"
+   ],
+   "tema": "dinheiro",
+   "fonte": {
+    "tipo": "Reddit",
+    "rotulo": "r/n8n",
+    "url": "https://www.reddit.com/r/n8n/comments/1x52mx6/i_built_a_telegram_bot_in_n8n_that_calculates_my/"
+   },
+   "autor": "u/MiveClor",
+   "data": "2026-10-13",
+   "prompt": null,
+   "comoReproduzir": "Exporte o CSV da corretora e peça a um fluxo para casar compras e vendas pela regra fiscal do seu país, com o câmbio do dia. Mostre o impacto antes de confirmar a ordem. Isso não substitui o contador."
+  },
+  {
+   "id": "r-1x471s1",
+   "titulo": "Formulário semanal de repasses, de 40 minutos para 10",
+   "tituloOriginal": "I got a 40-minute weekly form down to about 10 minutes of checking",
+   "resumo": "Toda segunda a pessoa copiava repasses, taxas e estornos do portal de pagamento para um formulário de 12 campos do contador. A ordem dos campos não bate com a do portal, e à mão levava uns 40 minutos. Um agente com navegador passou a ler o extrato e preencher os campos, parando antes de enviar. Na primeira segunda demorou mais do que à mão, porque foi preciso explicar qual linha ia em qual campo. Na segunda seguinte, revisar e apertar enviar levou cerca de 10 minutos. O envio continua humano.",
+   "agentes": [
+    "outro"
+   ],
+   "tema": "dinheiro",
+   "fonte": {
+    "tipo": "Reddit",
+    "rotulo": "r/automation",
+    "url": "https://www.reddit.com/r/automation/comments/1x471s1/i_got_a_40minute_weekly_form_down_to_about_10/"
+   },
+   "autor": "u/Remarkable-Boat-2874",
+   "data": "2026-10-12",
+   "prompt": null,
+   "comoReproduzir": "Abra o extrato e o formulário lado a lado, diga ao agente qual número entra em cada campo e exija uma parada antes do envio. Confira cada valor na segunda semana, não na primeira."
+  },
+  {
+   "id": "r-1x3n8cg",
+   "titulo": "Cartas de rejeição de emprego saem sozinhas da caixa de entrada",
+   "tituloOriginal": "I got sick and tired of rejection letters that I created an N8N automation that puts rejection in specific labels and removes them from my Inbox.",
+   "resumo": "Depois de uma sequência de respostas negativas a vagas de automação, a pessoa montou um fluxo no n8n em duas contas de Gmail. Um filtro manda para uma pasta tudo que tem a palavra Application. O fluxo lê, decide se é recusa e, se for, tira o e-mail da caixa de entrada, aplica um marcador e manda um resumo para o Slack, com o motivo e uma observação irônica. Os dois primeiros avisos do Slack eram testes enviados pela própria pessoa.",
+   "agentes": [
+    "n8n"
+   ],
+   "tema": "trabalho",
+   "fonte": {
+    "tipo": "Reddit",
+    "rotulo": "r/n8n",
+    "url": "https://www.reddit.com/r/n8n/comments/1x3n8cg/i_got_sick_and_tired_of_rejection_letters_that_i/"
+   },
+   "autor": "u/LabStunning2538",
+   "data": "2026-10-11",
+   "prompt": null,
+   "comoReproduzir": "Filtre os e-mails de candidatura, peça ao fluxo para separar recusa de outras respostas e só então arquive. Mande um aviso para você conferir os primeiros casos à mão."
+  },
+  {
+   "id": "r-1x1sfa6",
+   "titulo": "Ligação de voz que avisa “sou uma IA” na primeira frase",
+   "tituloOriginal": "Our voice agent says it's an AI in the first few seconds. Here's how people reacted",
+   "resumo": "Numa imobiliária, um agente de voz retoma contatos antigos e se apresenta como IA logo na abertura, com o nome do corretor e do bairro. A equipe preferiu a desligação cedo ao risco de a pessoa descobrir no meio da conversa que falava com um robô. Cerca de metade desligou nos primeiros 10 segundos. O autor lembra que número desconhecido já leva muita gente a desligar, e compara com as ligações humanas de antes.",
+   "agentes": [
+    "outro"
+   ],
+   "tema": "vendas",
+   "fonte": {
+    "tipo": "Reddit",
+    "rotulo": "r/AI_Agents",
+    "url": "https://www.reddit.com/r/AI_Agents/comments/1x1sfa6/our_voice_agent_says_its_an_ai_in_the_first_few/"
+   },
+   "autor": "u/Warm-Reaction-456",
+   "data": "2026-10-09",
+   "prompt": null,
+   "comoReproduzir": "Se for ligar no lugar de alguém, a primeira frase diz que é uma IA, para quem e por quê, e pergunta se pode continuar. Conte as desligações dos primeiros segundos antes de comemorar quem ficou na linha."
+  },
+  {
+   "id": "r-1x42unw",
+   "titulo": "O CRM parecia completo e nenhum pagamento passou",
+   "tituloOriginal": "Our voice agent filled every CRM field correctly yet none of the payments went through",
+   "resumo": "Um agente de voz de cobrança marcava confiança alta em quase todo campo. Alguém da operação ouviu as gravações: um dígito da conta trocado, “quinze vinte” virando dois campos, nome comum no lugar do nome dito. O cadastro parecia certo e o pagamento voltava dias depois. Agora há uma checagem entre o agente e o CRM: tamanho e dígito verificador da conta, e nome segurado quando a confiança por letra cai.",
+   "agentes": [
+    "outro"
+   ],
+   "tema": "trabalho",
+   "fonte": {
+    "tipo": "Reddit",
+    "rotulo": "r/AI_Agents",
+    "url": "https://www.reddit.com/r/AI_Agents/comments/1x42unw/our_voice_agent_filled_every_crm_field_correctly/"
+   },
+   "autor": "u/CoursePopular824",
+   "data": "2026-10-12",
+   "prompt": null,
+   "comoReproduzir": "Não trate “campo preenchido” como acerto. Confira conta, documento e nome com regra fixa antes de gravar, e ouça uma amostra das ligações."
+  },
+  {
+   "id": "r-1x183wp",
+   "titulo": "Nota de voz no WhatsApp vira convite na agenda",
+   "tituloOriginal": "I gave my AI agent a voice and now I can't live without it!",
+   "resumo": "Um arquiteto de sistemas passou a falar com um assistente pelo WhatsApp. Manda um áudio com nome, data e horário de alguém que conheceu num evento; o agente transcreve, cria o convite na agenda e envia o e-mail. No treino do filho, pede que o agente olhe o trabalho de tempos em tempos e devolva outro áudio. Ele diz que tarefas repetidas, como candidaturas, rodam sem gastar token de conversa. O relato não descreve qual modelo está por trás.",
+   "agentes": [
+    "outro"
+   ],
+   "tema": "trabalho",
+   "fonte": {
+    "tipo": "Reddit",
+    "rotulo": "r/AI_Agents",
+    "url": "https://www.reddit.com/r/AI_Agents/comments/1x183wp/i_gave_my_ai_agent_a_voice_and_now_i_cant_live/"
+   },
+   "autor": "u/No_Kangaroo_4454",
+   "data": "2026-10-09",
+   "prompt": null,
+   "comoReproduzir": "Ligue um agente ao WhatsApp, à agenda e ao e-mail. Comece por um pedido falado que vira um convite, e leia o convite antes de deixar o envio automático."
+  },
+  {
+   "id": "r-1x4xx7n",
+   "titulo": "E-mail vira ficha, rascunho no Gmail e alerta no Telegram",
+   "tituloOriginal": "How I structured an AI Email Processing Workflow in n8n (Structured Outputs + Fallback Error Handling)",
+   "resumo": "O fluxo no n8n pede ao Gemini uma resposta em campos fixos: de quem é o e-mail, o que a pessoa quer e a prioridade. Se precisa de resposta, gera um rascunho no Gmail para um humano revisar. Tudo é anotado numa planilha. Prioridade alta dispara um aviso no Telegram. Se a leitura falha ou estoura o tempo, o e-mail cru vai para uma trilha de erro em vez de sumir.",
+   "agentes": [
+    "n8n",
+    "gemini"
+   ],
+   "tema": "trabalho",
+   "fonte": {
+    "tipo": "Reddit",
+    "rotulo": "r/n8n",
+    "url": "https://www.reddit.com/r/n8n/comments/1x4xx7n/how_i_structured_an_ai_email_processing_workflow/"
+   },
+   "autor": "u/Highlight_maker",
+   "data": "2026-10-13",
+   "prompt": null,
+   "comoReproduzir": "Peça ao modelo campos fechados, não um texto solto. Grave um rascunho em vez de enviar, anote cada e-mail numa planilha e tenha um desvio para quando a chamada falhar."
+  },
+  {
+   "id": "r-1x1iqt1",
+   "titulo": "Currículos que chegam por e-mail viram uma planilha",
+   "tituloOriginal": "A client asked me for a workflow I never pitched, and that is the whole point",
+   "resumo": "Numa reunião, o cliente disse que as candidaturas tinham disparado e que ainda não tinha um sistema de recrutamento. O fluxo, já pronto no n8n, lê os currículos e junta tudo numa planilha do Google, para ele deixar de abrir vinte PDFs. O autor trata a planilha como base: triagem e resposta podem entrar depois, sem refazer a leitura dos arquivos.",
+   "agentes": [
+    "n8n"
+   ],
+   "tema": "trabalho",
+   "fonte": {
+    "tipo": "Reddit",
+    "rotulo": "r/n8n",
+    "url": "https://www.reddit.com/r/n8n/comments/1x1iqt1/a_client_asked_me_for_a_workflow_i_never_pitched/"
+   },
+   "autor": "u/easybits_ai",
+   "data": "2026-10-09",
+   "prompt": null,
+   "comoReproduzir": "Receba os PDFs de currículo, extraia nome, vaga e contato para uma planilha e só então pense em filtros. Não prometa um sistema de recrutamento inteiro no primeiro passo."
+  },
+  {
+   "id": "r-1x5rdh6",
+   "titulo": "Suporte que passa a conversa para uma pessoa quando não sabe",
+   "tituloOriginal": "built a self hostable ai support bot with an inbox and i love it",
+   "resumo": "O autor publicou o Momo, um bot de suporte que sobe com Docker no servidor de quem usa. Aponta para o site ou para documentos e responde a partir disso, com um modelo trazido pela própria pessoa. Antes de enviar, confere o rascunho nas fontes. Se não achar base, diz que não sabe e entrega o chat a um humano, em vez de inventar uma política de reembolso. Uma resposta humana pode virar conhecimento do bot no clique seguinte. Ainda é a primeira versão: só o widget do site, sem e-mail nem Slack.",
+   "agentes": [
+    "outro"
+   ],
+   "tema": "vendas",
+   "fonte": {
+    "tipo": "Reddit",
+    "rotulo": "r/automation",
+    "url": "https://www.reddit.com/r/automation/comments/1x5rdh6/built_a_self_hostable_ai_support_bot_with_an/"
+   },
+   "autor": "u/ShakaLaka_Around",
+   "data": "2026-10-14",
+   "prompt": null,
+   "comoReproduzir": "Alimente o bot só com as páginas que você topa citar. Se a resposta não estiver nessas páginas, a regra é chamar uma pessoa, não completar a lacuna."
+  },
+  {
+   "id": "r-1x2ianl",
+   "titulo": "Abriu o site para agentes e quase nenhum fez trabalho de verdade",
+   "tituloOriginal": "I opened my small website to AI agents and logged who showed up. Mostly it’s bots indexing bots.",
+   "resumo": "O dono de um site pequeno publicou versão em Markdown, um arquivo llms.txt, um servidor MCP e cobrança de centavos por chamada. Nos primeiros dias entrou muito robô de indexação: centenas de pedidos, a maior parte da Meta e da Amazon. Cerca de 80 clientes conectaram no MCP, quase todos diretórios e medidores de reputação. Chamadas que pareciam trabalho real: três. Pagamento de agente: nenhum. O relato serve de freio para quem espera fila de agentes no dia em que publica a porta.",
+   "agentes": [
+    "outro"
+   ],
+   "tema": "pesquisa",
+   "fonte": {
+    "tipo": "Reddit",
+    "rotulo": "r/AI_Agents",
+    "url": "https://www.reddit.com/r/AI_Agents/comments/1x2ianl/i_opened_my_small_website_to_ai_agents_and_logged/"
+   },
+   "autor": "u/S_B_B_B_K",
+   "data": "2026-10-10",
+   "prompt": null,
+   "comoReproduzir": "Se for abrir uma porta para agentes, registre quem pede o quê por alguns dias e separe indexador de uso real antes de concluir que há demanda."
   }
  ]
 }

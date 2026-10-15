@@ -5,13 +5,19 @@ Catálogo público, em português, do que pessoas reais fazem com agentes de IA.
 **Stack (tudo gratuito e de código aberto):** Next.js 15 (App Router, TypeScript) · PostgreSQL + Prisma · Tailwind CSS 4 · Auth.js (somente para o admin).
 O código não depende de nenhum host: roda em qualquer lugar com Node 20 ou Docker e um Postgres.
 
+## Notas — 15 de outubro de 2026
+
+- O catálogo em `data/casos.json` passou de 32 para **42 casos**. Entraram 10 relatos novos, só de quem fez ou usa de verdade, das comunidades já listadas abaixo. Campo `atualizado`: `2026-10-15`.
+- A aba de **sugerir um caso** fica de fora desta versão. O envio por visitantes continua no futuro.
+- O próximo lote é **sexta, 23 de outubro de 2026**. Antes disso o catálogo não muda. Nada é publicado automaticamente: cada caso passa por revisão.
+
 ## Rodar localmente
 
 ### Opção 1: um comando (Docker)
 ```bash
 docker compose up --build
 ```
-- Site: http://localhost:3000. As migrações e os 32 casos são carregados automaticamente.
+- Site: http://localhost:3000. As migrações e os 42 casos são carregados automaticamente.
 - Painel: http://localhost:3000/admin/entrar. Use o e-mail `admin@localhost`; o link chega no Mailpit, em http://localhost:8025.
 - Para mudar valores, crie um `.env` ao lado do `docker-compose.yml` (o Compose lê `ADMIN_EMAIL`, `AUTH_SECRET` etc.).
 
@@ -20,7 +26,7 @@ Requer Node 20+ e um Postgres. Para subir só o banco e o e-mail: `docker compos
 ```bash
 cp .env.example .env          # ajuste DATABASE_URL, ADMIN_EMAIL...
 npm install
-npm run setup                 # migrações + seed dos 32 casos
+npm run setup                 # migrações + seed dos 42 casos
 npm run dev                   # http://localhost:3000
 ```
 
@@ -107,7 +113,7 @@ No hPanel: **Domínios → seu domínio → DNS / Nameservers → Gerenciar regi
 ## Estrutura
 ```
 prisma/schema.prisma      modelos (Case, Agent, Topic, Candidate, RateLimit, CollectorRun + tabelas do Auth.js para o admin)
-prisma/seed.ts            carrega data/casos.json (32 casos reais)
+prisma/seed.ts            carrega data/casos.json (42 casos reais)
 src/app/                  páginas, rotas (feed.xml, sitemap, robots, api/cron/coletar, api/salvos) e /admin
 src/lib/                  banco, auth do admin, coletor do Reddit, limite de requisições, consultas
 Dockerfile, docker-compose.yml, vercel.json (opcional)
