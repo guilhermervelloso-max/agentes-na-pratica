@@ -14,7 +14,7 @@ input,select,textarea{font:inherit;padding:.5rem .7rem;border:1px solid var(--bd
 .card h3{margin:0;font-size:1.08rem}.card h3 a{color:var(--tx);text-decoration:none}
 .meta{font-size:.82rem;color:var(--mut);display:flex;flex-wrap:wrap;gap:.4rem;align-items:center}
 .tag{background:#e3f1ec;color:var(--pri);border-radius:6px;padding:.1rem .45rem;font-weight:700;font-size:.78rem;text-decoration:none}
-.tag.ex{background:#fdebd0;color:#8a5a12}.novo{background:var(--acc);color:#1f2a2e}
+.novo{background:var(--acc);color:#1f2a2e}
 details summary{cursor:pointer;font-weight:600;color:var(--pri)}pre{white-space:pre-wrap;background:#f4f1ea;padding:.6rem;border-radius:8px;font-size:.88rem}
 .acoes{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:auto}
 .dia{margin:1.6rem 0 .6rem;font-size:1.05rem;border-left:5px solid var(--acc);padding-left:.6rem}

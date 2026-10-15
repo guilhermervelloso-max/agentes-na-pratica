@@ -13,14 +13,16 @@ const novo = d => (new Date(D.atualizado) - new Date(d)) / 864e5 < 7;
 
 function card(c) {
   const sv = salvos().includes(c.id);
-  const fonte = c.fonte.url ? `<a href="${esc(c.fonte.url)}" target="_blank" rel="noopener">${esc(c.fonte.rotulo)}</a>` : `<span class="tag ex" title="Caso ilustrativo, sem fonte externa">${esc(c.fonte.rotulo)}</span>`;
+  const fonte = `<a href="${esc(c.fonte.url)}" target="_blank" rel="noopener" title="${esc(c.tituloOriginal)}">${esc(c.fonte.rotulo)}</a>`;
+  const bloco = c.prompt ? ["Ver prompt", c.prompt] : ["Como reproduzir", c.comoReproduzir];
   return `<article class="card">
    <div class="meta">${c.agentes.map(a => `<a class="tag" href="#/agente/${a}">${sigla(D.agentes[a])} · ${esc(D.agentes[a])}</a>`).join("")}
     ${novo(c.data) ? '<span class="tag novo">Novo</span>' : ""}</div>
    <h3><a href="#/caso/${c.id}">${esc(c.titulo)}</a></h3><p>${esc(c.resumo)}</p>
    <div class="meta"><a href="#/tema/${c.tema}">${esc(D.temas[c.tema])}</a> · ${fonte} · ${fmtData(c.data)}
-    ${c.enviadoPor ? ` · Enviado por ${esc(c.enviadoPor)}` : ""}</div>
-   <details><summary>Ver prompt</summary><pre>${esc(c.prompt)}</pre><button class="sec" data-copiar="${c.id}">Copiar prompt</button></details>
+    ${c.autor ? ` · por ${esc(c.autor)}` : ""}</div>
+   <p class="meta">Post original: “${esc(c.tituloOriginal)}”</p>
+   <details><summary>${bloco[0]}</summary>${c.prompt ? "" : "<small>Derivado do post (o autor não publicou um prompt).</small>"}<pre>${esc(bloco[1])}</pre><button class="sec" data-copiar="${c.id}">Copiar</button></details>
    <div class="acoes"><button class="sec" data-share="${c.id}">Compartilhar</button>
     <button class="sec" data-quero="${c.id}">Quero isso</button>
     <button class="${sv ? "on" : "sec"}" data-salvar="${c.id}">${sv ? "Salvo ✓" : "Salvar"}</button></div></article>`;
@@ -38,14 +40,14 @@ const maisUsados = (campo, k) => {
 function home(q = {}) {
   const ult = [...new Set(D.casos.map(c => c.data))].sort().pop(), nUlt = D.casos.filter(c => c.data === ult).length;
   $("#app").innerHTML = `<h1>O que as pessoas fazem com agentes de IA</h1>
-   <p class="sub">${D.casos.length} casos · atualizado em ${fmtData(D.atualizado)} · <strong>${nUlt} casos novos</strong> no último dia. Fontes: web aberta, X, Reddit, Hacker News, Bluesky e envios. Os casos iniciais são <span class="tag ex">Exemplo</span>.</p>
+   <p class="sub">${D.casos.length} casos · atualizado em ${fmtData(D.atualizado)} · <strong>${nUlt} casos novos</strong> no último dia. Fonte: posts reais do Reddit em comunidades sobre uso de IA, resumidos em português com link para o original.</p>
    <div class="ctrl"><input type="search" id="busca" placeholder="Buscar: WhatsApp, imposto, viagem…" value="${esc(q.busca||"")}">
     <select id="fAgente"><option value="">Todos os agentes</option>${Object.entries(D.agentes).map(([k,v]) => `<option value="${k}" ${q.agente===k?"selected":""}>${esc(v)}</option>`).join("")}</select>
     <select id="fTema"><option value="">Todos os temas</option>${Object.entries(D.temas).map(([k,v]) => `<option value="${k}" ${q.tema===k?"selected":""}>${esc(v)}</option>`).join("")}</select></div>
    <div id="res"></div>`;
   const f = () => {
     const b = $("#busca").value.toLowerCase().normalize("NFD").replace(/\p{M}/gu,""), a = $("#fAgente").value, t = $("#fTema").value;
-    const l = D.casos.filter(c => (!a || c.agentes.includes(a)) && (!t || c.tema === t) && (!b || (c.titulo+" "+c.resumo+" "+c.prompt+" "+c.agentes.map(x=>D.agentes[x]).join(" ")).toLowerCase().normalize("NFD").replace(/\p{M}/gu,"").includes(b)));
+    const l = D.casos.filter(c => (!a || c.agentes.includes(a)) && (!t || c.tema === t) && (!b || (c.titulo+" "+(c.tituloOriginal||"")+" "+c.resumo+" "+(c.prompt||c.comoReproduzir||"")+" "+c.agentes.map(x=>D.agentes[x]).join(" ")).toLowerCase().normalize("NFD").replace(/\p{M}/gu,"").includes(b)));
     $("#res").innerHTML = l.length ? porDia(l) : "<p>Nenhum caso encontrado. Que tal <a href='#/enviar'>enviar um</a>?</p>";
   };
   ["#busca","#fAgente","#fTema"].forEach(s => $(s).addEventListener("input", f)); f();
@@ -57,7 +59,7 @@ const paginas = {
     <div class="lista">${Object.entries(D.temas).map(([k,v]) => `<a class="card" href="#/tema/${k}"><h3>${esc(v)}</h3><span class="n">${contagem("tema",k)}</span><small>Agentes mais usados: ${esc(maisUsados("tema",k)) || "—"}</small></a>`).join("")}</div>`,
   salvos: () => { const l = D.casos.filter(c => salvos().includes(c.id)); return `<h1>Seus salvos</h1><p class="sub">Ficam guardados só neste navegador (localStorage).</p>${l.length ? `<div class="grade">${l.map(card).join("")}</div>` : "<p>Nada salvo ainda. Clique em “Salvar” em qualquer caso.</p>"}`; },
   sobre: () => `<h1>Sobre</h1><p>O <strong>Agentes na Prática</strong> é um catálogo em português de coisas úteis que dá para fazer com agentes de IA, explicado sem jargão.</p>
-    <p>Cada caso traz um resumo em palavras nossas, o agente usado, a fonte e um prompt de exemplo para você adaptar. Os casos iniciais são <strong>exemplos genéricos</strong>, marcados como “Exemplo”. Casos reais sempre terão link para a publicação original.</p>
+    <p>Cada caso vem de um post real do Reddit, em comunidades dedicadas a usos de IA (r/AI_Agents, r/ClaudeAI, r/ChatGPTPro, r/n8n, r/automation). Escrevemos um resumo em português com nossas palavras e sempre linkamos o post original, com autor e data. Quando o autor publicou o prompt, mostramos; quando não, mostramos um “como reproduzir” derivado do post.</p><p>Os resultados são relatos dos autores e não foram verificados por nós.</p>
     <p>Qualquer pessoa pode <a href="#/enviar">enviar um caso</a>. Tudo é revisado manualmente antes de publicar.</p><p>Código aberto: <a href="${REPO}">${REPO}</a></p>`,
   privacidade: () => `<h1>Privacidade</h1><p>Este site é estático. Não usamos cookies, rastreadores nem contas. Seus itens salvos e pedidos “Quero isso” ficam apenas no <em>localStorage</em> do seu navegador e podem ser apagados limpando os dados do site.</p><p>Ao enviar um caso por e-mail ou GitHub, você compartilha as informações que escrever com o mantenedor.</p><button id="limpar">Apagar meus dados locais</button>`,
   apoiar: () => `<h1>Apoiar</h1><p>Gostou do projeto? Divulgue, envie casos ou contribua no <a href="${REPO}">GitHub</a>. Para parcerias e patrocínio, escreva para <a href="mailto:${EMAIL}">${EMAIL}</a>.</p>`,
@@ -66,7 +68,7 @@ const paginas = {
     <select name="agente">${Object.entries(D.agentes).map(([k,v]) => `<option value="${k}">${esc(v)}</option>`).join("")}</select>
     <select name="tema">${Object.entries(D.temas).map(([k,v]) => `<option value="${k}">${esc(v)}</option>`).join("")}</select>
     <textarea name="resumo" required rows="3" placeholder="O que o agente fez?"></textarea><textarea name="prompt" rows="3" placeholder="Prompt usado (opcional)"></textarea>
-    <input name="link" type="url" placeholder="Link da fonte (opcional)"><input name="nome" placeholder="Seu nome ou @ (opcional)">
+    <input name="link" type="url" required placeholder="Link do post no Reddit"><input name="nome" placeholder="Seu nome ou @ (opcional)">
     <div class="acoes"><button value="github">Enviar pelo GitHub</button><button value="email" class="sec">Enviar por e-mail</button></div></form>`
 };
 function rota() {
@@ -81,7 +83,7 @@ document.addEventListener("click", async e => {
   const b = e.target.closest("button"); if (!b) return; const ds = b.dataset;
   const c = D.casos.find(x => x.id === (ds.salvar||ds.share||ds.quero||ds.copiar));
   if (ds.salvar) { const s = salvos(), i = s.indexOf(ds.salvar); i < 0 ? s.push(ds.salvar) : s.splice(i,1); setSalvos(s); rota(); toast(i<0 ? "Salvo neste navegador" : "Removido dos salvos"); }
-  if (ds.copiar) { await navigator.clipboard?.writeText(c.prompt); toast("Prompt copiado"); }
+  if (ds.copiar) { await navigator.clipboard?.writeText(c.prompt || c.comoReproduzir); toast("Copiado"); }
   if (ds.share) { const url = location.href.split("#")[0] + "#/caso/" + c.id;
     if (navigator.share) navigator.share({title:c.titulo, text:c.resumo, url}).catch(()=>{}); else { await navigator.clipboard?.writeText(url); toast("Link copiado"); } }
   if (ds.quero) { const q = JSON.parse(localStorage.getItem("ap_quero")||"[]"); if(!q.includes(c.id)) q.push(c.id); localStorage.setItem("ap_quero", JSON.stringify(q));

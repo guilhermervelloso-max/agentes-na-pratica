@@ -3,7 +3,7 @@
 Catálogo em português (PT-BR) do que dá para fazer com agentes de IA, para quem não é da área técnica.
 Site 100% estático: HTML, CSS e JavaScript puro, sem etapa de build. Os dados ficam em `data/casos.json`.
 
-> Os 20 casos iniciais são **exemplos genéricos** escritos para o projeto (fonte “Exemplo”, sem link). Não representam pessoas ou publicações reais.
+> Todos os casos são **posts reais do Reddit**, com título original, link, subreddit, autor (u/nome) e data. Os resumos foram escritos em PT-BR. Como nenhum dos posts trazia um prompt pronto, cada caso mostra um “Como reproduzir” derivado do post e identificado como tal. Os resultados são relatos dos autores, não verificados.
 
 ## Rodar localmente
 - **Mais simples:** abra `index.html` no navegador. (Abrindo direto pelo arquivo, o site lê `data/casos.js`, uma cópia dos dados, porque navegadores bloqueiam `fetch` em `file://`.)
@@ -12,18 +12,15 @@ Site 100% estático: HTML, CSS e JavaScript puro, sem etapa de build. Os dados f
 ## Adicionar casos
 1. Edite `data/casos.json` e adicione um objeto em `casos`:
 ```json
-{"id":"caso-21","titulo":"…","resumo":"…","agentes":["chatgpt"],"tema":"casa",
- "fonte":{"tipo":"Reddit","rotulo":"Reddit","url":"https://…"},"enviadoPor":null,
- "data":"2026-10-15","prompt":"…"}
+{"id":"r-<id do post>","titulo":"Título em PT-BR","tituloOriginal":"Título do post",
+ "resumo":"…","agentes":["n8n"],"tema":"casa",
+ "fonte":{"tipo":"Reddit","rotulo":"r/n8n","url":"https://www.reddit.com/r/n8n/comments/…"},
+ "autor":"u/nome","data":"2026-10-15","prompt":null,"comoReproduzir":"…"}
 ```
+   Use `prompt` só se o post mostrar um prompt; senão deixe `null` e preencha `comoReproduzir`.
    `agentes` e `tema` usam as chaves de `agentes` e `temas` no mesmo arquivo (dá para criar novas).
 2. Atualize `atualizado` com a data do dia.
 3. Regenere a cópia para `file://` e o RSS: `python3 scripts/gerar.py`.
-
-## Publicar no GitHub Pages
-Settings → Pages → *Build and deployment* → Source: **Deploy from a branch** → Branch `main`, pasta `/ (root)` → Save.
-Em alguns minutos o site fica em `https://guilhermervelloso-max.github.io/agentes-na-pratica/`.
-Troque `EMAIL` no topo de `app.js` pelo seu e-mail de contato.
 
 ## Funcionalidades (checklist)
 Baseado em estudo externo da estrutura do agentusecases.ai; código, textos e identidade visual são originais.
@@ -33,7 +30,7 @@ Baseado em estudo externo da estrutura do agentusecases.ai; código, textos e id
 | Home com cartões (título, resumo, selo do agente com sigla, tema, fonte, data) | ✅ |
 | Agrupamento por dia (“N casos” por data) e selo “Novo” (últimos 7 dias) | ✅ |
 | Contadores: total de casos, agentes, data de atualização, casos do último dia | ✅ |
-| “Ver prompt” expansível + copiar prompt | ✅ |
+| “Ver prompt” (quando o post traz um) ou “Como reproduzir” (derivado do post), expansível e copiável | ✅ |
 | Compartilhar (Web Share API ou copia o link) | ✅ |
 | Salvar (localStorage) + página “Salvos” com contador no menu | ✅ |
 | “Quero isso” | ⚠️ estático: registra no localStorage e oferece e-mail (mailto) |
@@ -41,8 +38,8 @@ Baseado em estudo externo da estrutura do agentusecases.ai; código, textos e id
 | Página Agentes (contagem + temas mais comuns) e página de cada agente | ✅ |
 | Página Temas (contagem + agentes mais usados) e página de cada tema | ✅ |
 | Página individual de cada caso com link compartilhável (`#/caso/id`) | ✅ |
-| “Enviado por” no cartão | ✅ (campo `enviadoPor`) |
-| Selo de fonte com link para o post original | ✅ (exemplos usam “Exemplo”, sem link) |
+| Autor do post (u/nome) e título original no cartão | ✅ |
+| Selo de fonte (subreddit) com link para o post original | ✅ |
 | Enviar caso | ⚠️ estático: formulário abre Issue no GitHub ou e-mail; cópia no localStorage |
 | Moderação/revisão antes de publicar | ⚠️ manual (Issues + edição do JSON) |
 | RSS (`feed.xml`) | ✅ estático, regenerado pelo script |
@@ -52,20 +49,25 @@ Baseado em estudo externo da estrutura do agentusecases.ai; código, textos e id
 | Responsivo / funciona abrindo `index.html` | ✅ |
 
 ## Fontes
-Pelo que o agentusecases.ai mostra publicamente (rodapé e selos dos cartões), os casos vêm de: **web aberta** (blogs, Substack), **X**, **Reddit**, **Hacker News**, **Bluesky** e **envios de usuários**, sempre reescritos e com link para o original. Termos e subreddits abaixo são *inferidos*, não informados pelo site.
+Somente subreddits focados em **relatos de uso de IA**:
 
-| Fonte | Como coletar de forma legal |
+| Subreddit | Por quê |
 |---|---|
-| Hacker News | API pública Algolia: `hn.algolia.com/api/v1/search_by_date?query=…` (sem chave) |
-| Reddit | JSON público (`/r/<sub>/search.json`) para baixo volume; para uso regular, API oficial com OAuth e User-Agent identificado. Sugestões: r/AI_Agents, r/ClaudeAI, r/ChatGPT, r/n8n, r/automation, r/OpenAI, r/LocalLLaMA |
-| Bluesky | API pública `public.api.bsky.app/xrpc/app.bsky.feed.searchPosts` |
-| X | API oficial do X (busca recente, plano pago/créditos). Não fazer scraping |
-| Blogs / Substack | RSS de cada publicação (`<blog>.substack.com/feed`) |
-| Envios | Issues do GitHub e e-mail pelo formulário do site |
+| r/AI_Agents | Comunidade de agentes; muitos relatos “eu construí / eu uso” |
+| r/ClaudeAI | Projetos concretos feitos com Claude e Claude Code |
+| r/ChatGPTPro | Usuários avançados contando como usam o ChatGPT no dia a dia |
+| r/n8n | Fluxos de automação com IA para negócios e uso pessoal, geralmente com detalhes |
+| r/automation | Automações reais em empresas pequenas e na rotina |
 
-Termos sugeridos: “AI agent”, “Claude Code”, “ChatGPT agent”, “n8n agent”, “agente de IA”, nomes de agentes + “I used / automated”.
+Testados e **descartados**: r/OpenAI e r/LocalLLaMA (a maior parte dos posts é notícia de modelos ou discussão técnica, não caso de uso).
 
-`python3 scripts/coletar.py` busca candidatos no HN, Reddit e Bluesky e grava `scripts/candidatos.json` (fora do git). **Nada é publicado automaticamente**: leia, reescreva em português com suas palavras, credite e linke a fonte, e só então adicione ao `casos.json`.
+### Coleta (`scripts/coletar.py`)
+`python3 scripts/coletar.py --periodo month` (ou `week`, `year`) lê o feed **RSS público** dos posts mais votados de cada subreddit, filtra os que parecem relatos de uso e grava `scripts/candidatos.json` (fora do git). Sem dependências externas.
+
+- Por que RSS: de servidores, `www.reddit.com/.json` e `api.reddit.com` responderam 403, e `old.reddit.com` redirecionou (302). O `.rss` respondeu 200.
+- O Reddit limita requisições (erro 429). O script espera 8 s entre subreddits; se aparecer 429, rode de novo mais tarde.
+- Para coleta regular ou em maior volume, o caminho oficial é a API do Reddit com OAuth (app-only), seguindo os termos de uso.
+- **Nada é publicado automaticamente.** Leia o post, escreva um resumo fiel em PT-BR com suas palavras, credite autor e subreddit, linke o original e só então adicione ao `casos.json`.
 
 ## Estrutura
 `index.html`, `style.css`, `app.js`, `feed.xml`, `data/casos.json`, `data/casos.js`, `scripts/coletar.py`, `scripts/gerar.py`.
